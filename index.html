@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>North Capital 2.0 · Executive Experience</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<link href="css/style.css" rel="stylesheet"/><meta name="theme-color" content="#0f2740"><meta name="description" content="North Capital — Private Wealth Intelligence"><link rel="icon" type="image/svg+xml" href="assets/north-capital-mark.svg"></head>
+<body class="dark"><noscript>Este Dashboard precisa de JavaScript ativado para funcionar.</noscript>
+<div class="lock" id="lockScreen">
+<div class="lock-box">
+<div class="lock-icon">🔐</div>
+<div class="north-login-brand"><img src="assets/north-capital-mark.svg" alt="North Capital"><div><h2>North Capital</h2><span>Private Wealth Intelligence</span></div></div>
+<p>Digite a senha para acessar</p>
+<form autocomplete="off" id="loginForm">
+<input autocomplete="current-password" id="lockPwd" inputmode="numeric" maxlength="4" placeholder="••••" type="password"/>
+<button class="bp" id="loginButton" onclick="return window.mcUnlock()" type="button">Entrar</button>
+</form>
+<div class="lock-err" id="lockErr"></div>
+
+</div>
+</div>
+<div id="app" style="display:none">
+<div class="hdr">
+<div class="north-header-lockup">
+  <img src="assets/north-capital-mark.svg" alt="North Capital">
+  <div>
+    <strong>North Capital</strong>
+    <span>Private Wealth Intelligence</span>
+  </div>
+  <small>Build 14</small>
+</div>
+<div class="hdr-r">
+<div class="badge"><div class="dot" id="dot"></div><span id="stlbl">Carregando...</span></div>
+<button class="btn-theme" id="btnTheme" onclick="toggleTheme()">🌙</button>
+<button class="btn g" onclick="openM('novo')">➕ Novo ativo</button>
+<button class="btn o" onclick="openM('aporte')">💵 Aporte</button>
+<button class="btn r" onclick="openM('venda')">− Venda</button>
+<button class="btn" onclick="exp()">📤 Exportar</button>
+<button class="btn" onclick="backupJson()">☁ Backup</button>
+<button class="btn" onclick="openM('imp')">📥 Importar</button>
+<button class="btn" id="btnR" onclick="refresh()">📈 Atualizar mercado</button>
+</div>
+</div>
+<div class="tabs">
+<div class="tab on" onclick="showPg('vg',this)">Visão Geral</div>
+<div class="tab" onclick="showPg('at',this)">Ativos</div>
+<div class="tab" onclick="showPg('al',this)">Alocação &amp; Meta</div>
+<div class="tab" onclick="showPg('pl',this)">Política</div>
+<div class="tab" onclick="showPg('st',this)">Estratégia</div>
+<div class="tab" onclick="showPg('rb',this)">Rebalanceamento</div>
+<div class="tab" onclick="showPg('fi',this)">Inteligência</div><div class="tab" onclick="showPg('go',this)">Objetivos</div><div class="tab" onclick="showPg('na',this)">North AI</div>
+<div class="tab" onclick="showPg('dv',this)">Dividendos</div>
+<div class="tab" onclick="showPg('hs',this)">Histórico</div>
+</div>
+<!-- VISAO GERAL -->
+<div class="pg on" id="pg-vg">
+<section class="north-mission-control">
+  <div class="mission-main">
+    <div class="mission-eyebrow">Investment Mission Control</div>
+    <h1 id="northGreeting">Bom dia.</h1>
+    <p id="northMissionInsight">Sua carteira está sendo analisada conforme a política patrimonial definida.</p>
+    <div class="mission-actions">
+      <button class="north-primary" onclick="northOpenPage('rb')">Planejar próximo aporte</button>
+      <button class="north-secondary" onclick="northOpenPage('fi')">Ver inteligência</button>
+    </div>
+  </div>
+  <div class="mission-score-card">
+    <span>Family Office Score</span>
+    <strong id="northFamilyScore">—</strong>
+    <small id="northFamilyLabel">calculando</small>
+  </div>
+  <div class="mission-priority-card">
+    <span>Maior prioridade</span>
+    <strong id="northPriority">—</strong>
+    <small id="northPriorityReason">aguardando análise</small>
+  </div>
+</section>
+
+<section class="north-executive-strip">
+  <article class="north-exec-card"><span>North Grade</span><strong id="northHomeGrade">—</strong><small id="northHomeGradeLabel">calculando</small></article>
+  <article class="north-exec-card"><span>Risco dominante</span><strong id="northHomeRisk">—</strong><small id="northHomeRiskText">analisando estrutura</small></article>
+  <article class="north-exec-card"><span>Meta mais próxima</span><strong id="northHomeGoal">—</strong><small id="northHomeGoalText">calculando progresso</small></article>
+  <article class="north-exec-card north-exec-action"><span>Decisão recomendada</span><strong id="northHomeDecision">—</strong><small id="northHomeDecisionText">aguardando leitura</small></article>
+</section>
+<section class="north-home-grid">
+  <article class="north-home-panel"><div class="north-section-title"><span>Radar executivo</span><small>principais sinais</small></div><div id="northHomeRadar" class="north-home-radar"></div></article>
+  <article class="north-home-panel"><div class="north-section-title"><span>Progresso dos objetivos</span><small>visão consolidada</small></div><div id="northHomeGoals" class="north-home-goals"></div></article>
+  <article class="north-home-panel"><div class="north-section-title"><span>Últimos eventos</span><small>timeline patrimonial</small></div><div id="northHomeTimeline" class="north-home-timeline"></div></article>
+</section>
+
+<div class="hero-grid">
+<div class="card metric-card metric-primary"><div class="metric-top"><div class="lbl">Patrimônio total</div><span class="metric-icon">◆</span></div><div class="val" id="mpat">—</div><div class="val2" id="mpatUsd">—</div><div class="sub" id="mvd">—</div></div>
+<div class="card metric-card"><div class="metric-top"><div class="lbl">Capital investido</div><span class="metric-icon">↘</span></div><div class="val" id="minv">—</div><div class="val2" id="minvUsd">—</div><div class="sub" id="mrp">—</div></div>
+<div class="card metric-card"><div class="metric-top"><div class="lbl">Resultado acumulado</div><span class="metric-icon">↗</span></div><div class="val" id="mres">—</div><div class="val2" id="mresUsd">—</div><div class="sub" id="mvd2">—</div></div>
+<div class="card metric-card"><div class="metric-top"><div class="lbl">Dividendos líquidos</div><span class="metric-icon">$</span></div><div class="val pos" id="mdiv">—</div><div class="val2" id="mdivUsd">—</div><div class="sub" id="mdivSub">recebidos no histórico</div></div>
+<div class="card metric-card"><div class="metric-top"><div class="lbl">Rentabilidade BRL</div><span class="metric-icon">%</span></div><div class="val" id="mret">—</div><div class="val2" id="mretUsd">Retorno da posição</div><div class="sub" id="mretSub">sem dividendos</div></div>
+<div class="card metric-card"><div class="metric-top"><div class="lbl">Câmbio USD/BRL</div><span class="metric-icon">US</span></div><div class="val" id="mcam">—</div><div class="val2" id="mcamUpd" style="font-size:10px"></div><div class="sub">cotação em tempo real</div></div>
+</div>
+<div class="strategy-strip">
+<div class="strategy-item"><span>Exterior</span><strong id="kpiExterior">—</strong><small id="metaExteriorLabel">meta 30%</small><div class="mini-progress"><i id="barExterior"></i></div></div>
+<div class="strategy-item"><span>ETFs nos EUA</span><strong id="kpiEtf">—</strong><small id="metaEtfLabel">meta 55%</small><div class="mini-progress"><i id="barEtf"></i></div></div>
+<div class="strategy-item"><span>Ações nos EUA</span><strong id="kpiAcao">—</strong><small id="metaAcaoLabel">meta 45%</small><div class="mini-progress"><i id="barAcao"></i></div></div>
+<div class="strategy-item"><span>Aderência estratégica</span><strong id="kpiAderencia">—</strong><small>alocação consolidada</small><div class="mini-progress"><i id="barAderencia"></i></div></div>
+</div>
+<div class="cash-usd-dashboard card">
+<div><span>CAIXA USD</span><strong id="dashCashUSD">US$ 0.00</strong><small id="dashCashBRL">R$ 0,00</small></div>
+<div><span>PESO NOS EUA</span><strong id="dashCashPct">0.0%</strong><small id="dashCashMeta">meta 0%</small></div>
+<div><span>SITUAÇÃO</span><strong id="dashCashStatus">Sem meta</strong><small>saldo disponível para oportunidades</small></div>
+</div>
+<div class="grid2">
+<div class="card"><div class="ctitle">EUA vs Brasil</div><div class="ch"><canvas id="cMerc"></canvas></div></div>
+<div class="card"><div class="ctitle">EUA — ETF vs Ação</div><div class="ch"><canvas id="cTipo"></canvas></div></div>
+</div>
+<div class="grid2">
+<div class="card"><div class="ctitle">Composição ETFs</div><div class="ch"><canvas id="cEtf"></canvas></div></div>
+<div class="card"><div class="ctitle">Composição Ações EUA</div><div class="ch"><canvas id="cAcaoUS"></canvas></div></div>
+</div>
+<div class="grid2" style="margin-bottom:16px">
+<div class="card"><div class="ctitle">Renda Fixa Brasil</div><div class="ch"><canvas id="cRF"></canvas></div></div>
+<div class="card"><div class="ctitle">Ações / FIIs Brasil</div><div class="ch"><canvas id="cAcaoBR"></canvas></div></div>
+</div>
+<div class="card"><div class="ctitle">Resumo de alocação vs meta</div><div id="resAloc"></div></div>
+</div>
+<!-- ATIVOS -->
+<div class="pg" id="pg-at">
+<div class="tw"><table>
+<thead><tr><th>Ativo</th><th>Setor</th><th>Tipo</th><th>Qtd</th><th>PM orig.</th><th>Câmbio médio</th><th>Cotação</th><th>Hoje</th><th>Valor BRL</th><th>Valor USD</th><th>Rentab. USD</th><th>Rentab. BRL</th><th>Resultado BRL</th><th>Peso</th><th>Alvo</th><th>Δ</th><th>Div.</th><th></th></tr></thead>
+<tbody id="tbAt"></tbody>
+</table></div>
+</div>
+<!-- ALOCACAO -->
+<div class="pg" id="pg-al">
+<div class="grid2">
+<div class="card"><div class="ctitle"><span id="titleGeo">Geográfica — Meta 30% EUA / 70% BR</span></div><div id="alGeo"></div></div>
+<div class="card"><div class="ctitle"><span id="titleUS">EUA — Meta 55% ETF / 45% Ação</span></div><div id="alUS"></div></div>
+</div>
+<div class="card" style="margin-bottom:16px"><div class="ctitle"><span id="titleBR">Brasil — Meta 60% RF / 30% Ações / 10% Caixa</span></div><div id="alBR"></div></div>
+<div class="card"><div class="ctitle">Peso por ativo EUA — atual vs alvo</div><div id="alAt"></div></div>
+</div>
+
+<!-- POLÍTICA DE ALOCAÇÃO -->
+<div class="pg" id="pg-pl">
+  <div class="policy-hero">
+    <div>
+      <div class="policy-kicker">Sprint 3.1 · Motor Estratégico</div>
+      <h2>Política de Alocação</h2>
+      <p>Defina as metas da carteira em três blocos. Nesta etapa, a política passa a ser salva e utilizada pelo Dashboard, pela aba de alocação e pelos indicadores estratégicos.</p>
+    </div>
+    <div class="policy-status" id="policyStatus">
+      <span>STATUS DA POLÍTICA</span>
+      <strong>—</strong>
+      <small>validando configurações</small>
+    </div>
+  </div>
+
+  <div class="policy-grid">
+    <div class="card policy-card">
+      <div class="policy-card-head">
+        <div><span class="policy-step">Nível 1</span><h3>Distribuição geográfica</h3></div>
+        <span class="policy-total" id="sumGlobal">100%</span>
+      </div>
+      <p class="policy-help">Percentual do patrimônio consolidado destinado a cada mercado.</p>
+      <div class="policy-input-row">
+        <label><span>Brasil</span><div><input id="polBR" type="number" min="0" max="100" step="0.1" oninput="previewPolicy()"> <b>%</b></div></label>
+        <label><span>Estados Unidos</span><div><input id="polUS" type="number" min="0" max="100" step="0.1" oninput="previewPolicy()"> <b>%</b></div></label>
+      </div>
+      <div class="policy-bar"><i id="polBarBR"></i><i id="polBarUS"></i></div>
+      <div class="policy-legend"><span><i class="dot-br"></i>Brasil</span><span><i class="dot-us"></i>EUA</span></div>
+    </div>
+
+    <div class="card policy-card">
+      <div class="policy-card-head">
+        <div><span class="policy-step">Nível 2 · Brasil</span><h3>Classes de ativos</h3></div>
+        <span class="policy-total" id="sumBR">100%</span>
+      </div>
+      <p class="policy-help">Como o patrimônio brasileiro será distribuído.</p>
+      <div class="policy-input-row policy-three">
+        <label><span>Renda fixa</span><div><input id="polBRRenda" type="number" min="0" max="100" step="0.1" oninput="previewPolicy()"> <b>%</b></div></label>
+        <label><span>Ações / FIIs</span><div><input id="polBRAcao" type="number" min="0" max="100" step="0.1" oninput="previewPolicy()"> <b>%</b></div></label>
+        <label><span>Caixa</span><div><input id="polBRCaixa" type="number" min="0" max="100" step="0.1" oninput="previewPolicy()"> <b>%</b></div></label>
+      </div>
+      <div class="policy-bar"><i id="polBarBRRenda"></i><i id="polBarBRAcao"></i><i id="polBarBRCaixa"></i></div>
+    </div>
+
+    <div class="card policy-card">
+      <div class="policy-card-head">
+        <div><span class="policy-step">Nível 2 · EUA</span><h3>Classes de ativos</h3></div>
+        <span class="policy-total" id="sumUS">100%</span>
+      </div>
+      <p class="policy-help">Como o patrimônio americano será distribuído.</p>
+      <div class="policy-input-row policy-three">
+        <label><span>ETFs</span><div><input id="polUSETF" type="number" min="0" max="100" step="0.1" oninput="previewPolicy()"> <b>%</b></div></label>
+        <label><span>Ações</span><div><input id="polUSAcao" type="number" min="0" max="100" step="0.1" oninput="previewPolicy()"> <b>%</b></div></label>
+        <label><span>Caixa USD</span><div><input id="polUSCaixa" type="number" min="0" max="100" step="0.1" oninput="previewPolicy()"> <b>%</b></div></label>
+      </div>
+      <div class="policy-bar"><i id="polBarUSETF"></i><i id="polBarUSAcao"></i><i id="polBarUSCaixa"></i></div>
+      <div class="usd-cash-manager">
+        <div>
+          <span>Saldo atual na corretora</span>
+          <strong id="cashUsdCurrent">US$ 0.00</strong>
+          <small id="cashUsdBRL">R$ 0,00 convertido</small>
+        </div>
+        <div class="usd-cash-action">
+          <label for="cashUsdInput">Atualizar saldo (USD)</label>
+          <div><input id="cashUsdInput" type="number" min="0" step="0.01" placeholder="0.00"><button class="bp" onclick="updateCashUSD()">Salvar saldo</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card policy-summary-card">
+    <div class="ctitle">Resumo da política consolidada</div>
+    <div class="policy-summary-grid" id="policySummary"></div>
+    <div class="policy-note">
+      <strong>Próxima etapa:</strong> o Motor de Rebalanceamento Multinível utilizará esta política para decidir primeiro o mercado, depois a classe e, por último, o ativo.
+    </div>
+    <div class="policy-actions">
+      <button class="bs" onclick="resetPolicy()">Restaurar padrão 70/30</button>
+      <button class="bp" id="btnSavePolicy" onclick="savePolicy()">Salvar política</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ESTRATÉGIA -->
+<div class="pg" id="pg-st">
+  <div class="strategy-hero">
+    <div>
+      <div class="policy-kicker">Alpha 10 · Investment Thesis Center</div>
+      <h2>Investment Thesis Center</h2>
+      <p>Organize a tese de cada posição, calibre sua convicção e acompanhe o alinhamento estratégico em uma experiência visual premium.</p>
+    </div>
+    <div class="strategy-score-card">
+      <span>SCORE ESTRATÉGICO</span>
+      <strong id="strategyGlobalScore">—</strong>
+      <small id="strategyGlobalLabel">calculando</small>
+    </div>
+  </div>
+
+  <div class="strategy-tools card">
+    <div>
+      <label>Filtro</label>
+      <select id="strategyFilter" onchange="buildStrategy()">
+        <option value="ALL">Todos os ativos</option>
+        <option value="BR">Brasil</option>
+        <option value="US">Estados Unidos</option>
+        <option value="ETF">ETFs</option>
+        <option value="ACAO">Ações</option>
+        <option value="RENDA">Renda fixa</option>
+      </select>
+    </div>
+    <div class="strategy-explainer">
+      O score considera desvio da meta, peso da classe, disponibilidade para aporte, convicção e consistência da tese cadastrada.
+    </div>
+    <div class="strategy-view-toggle">
+      <button class="view-btn active" id="viewGrouped" onclick="setStrategyView('grouped',this)">Agrupado</button>
+      <button class="view-btn" id="viewGrid" onclick="setStrategyView('grid',this)">Cards</button>
+    </div>
+  </div>
+
+  <div id="strategyCards" class="strategy-grid"></div>
+</div>
+
+<!-- REBALANCEAMENTO -->
+<div class="pg" id="pg-rb">
+<div class="card" style="margin-bottom:16px">
+<div class="ctitle">Simulador de aporte para rebalanceamento</div>
+<div class="reb-head">
+<div class="fr"><label class="fl">Novo aporte (BRL)</label><input id="rbAporte" min="0" oninput="buildRebalance()" step="100" style="width:180px" type="number" value="1000"/></div>
+<div class="fr"><label class="fl">Escopo</label><select id="rbEscopo" onchange="buildRebalance()">
+<option value="FULL">Carteira completa</option>
+<option value="BR">Brasil completo</option>
+<option value="US">EUA completo</option>
+<option value="BR_RENDA">Renda fixa Brasil</option>
+<option value="BR_ACAO">Ações / FIIs Brasil</option>
+<option value="BR_CAIXA">Caixa BRL</option>
+<option value="US_ETF">ETFs EUA</option>
+<option value="US_ACAO">Ações EUA</option>
+<option value="US_CAIXA">Caixa USD</option>
+</select></div>
+<button class="bp" onclick="buildRebalance()">Recalcular</button>
+</div>
+<div class="info-box">O motor distribui o aporte em três níveis: mercado, classe e ativo. Classes abaixo da meta sem ativos cadastrados aparecem como alocação pendente, sem desviar o valor para outra classe.</div>
+<div class="decision-radar">
+<div class="radar-card"><span>Aderência atual</span><strong id="rbAdAntes">—</strong><small>antes do aporte</small><div class="mini-progress"><i id="rbBarAntes"></i></div></div>
+<div class="radar-card radar-highlight"><span>Aderência projetada</span><strong id="rbAdDepois">—</strong><small>após o aporte</small><div class="mini-progress"><i id="rbBarDepois"></i></div></div>
+<div class="radar-card"><span>Melhoria estimada</span><strong id="rbMelhora">—</strong><small>ganho de alinhamento</small></div>
+<div class="radar-card"><span>Valor não alocado</span><strong id="rbSobra">—</strong><small>valor sem destino após o plano</small></div>
+</div>
+<div class="reb-kpis">
+<div class="card"><div class="lbl">Aporte simulado</div><div class="val" id="rbTotal">—</div></div>
+<div class="card"><div class="lbl">Ativos para comprar</div><div class="val" id="rbQtd">—</div></div>
+<div class="card"><div class="lbl">Maior prioridade</div><div class="val" id="rbPrior">—</div></div>
+</div>
+<div id="rbTop3" class="rb-top3"></div><div id="rbTopRecommendation" class="rb-top-recommendation"></div>
+<div id="rbExecutive" class="rb-executive"></div>
+<div id="rbHierarchy" class="rb-hierarchy"></div><div id="rbPending" class="rb-pending"></div><div class="decision-summary" id="rbResumo">Informe um aporte para gerar o plano de compra.</div>
+<div class="decision-actions"><button class="bs" onclick="copyRebalance()">Copiar plano de aporte</button></div>
+</div>
+<div class="tw"><table>
+<thead><tr><th>Prioridade</th><th>Ativo</th><th>Tipo</th><th>Valor atual</th><th>% atual</th><th>% alvo</th><th>Desvio</th><th>Aporte sugerido</th><th>Qtd estimada</th><th>Ação</th></tr></thead>
+<tbody id="tbReb"></tbody>
+</table></div>
+</div>
+
+<!-- INTELIGÊNCIA -->
+<div class="pg" id="pg-fi">
+  <div class="fi-hero">
+    <div>
+      <div class="policy-kicker">Build 14 · North Score 2.0</div>
+      <h2>Inteligência da Carteira</h2>
+      <p>Uma visão consolidada da qualidade estratégica, convicção, diversificação setorial e exposição cambial.</p>
+    </div>
+    <div class="fi-quality-card premium-gauge-card"><div id="fiGaugeSummary" class="fi-gauge-summary"></div>
+      <div id="fiGauge" class="quality-gauge" style="--gauge:0">
+        <div class="gauge-inner">
+          <span>NORTH SCORE</span>
+          <strong id="fiQualityScore">—</strong>
+          <small id="fiQualityLabel">calculando</small><em id="fiQualityAction">analisando os pilares</em>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card fi-recommendations-card">
+    <div class="ctitle">Principais recomendações</div>
+    <div id="fiRecommendations" class="fi-recommendations"></div>
+  </div>
+  <div class="fi-kpis">
+    <div class="card"><span>Convicção média</span><strong id="fiConvictionAvg">—</strong><small>escala de 0 a 100</small></div>
+    <div class="card"><span>Concentração máxima</span><strong id="fiMaxPosition">—</strong><small id="fiMaxTicker">maior posição</small></div>
+    <div class="card"><span>Diversificação setorial</span><strong id="fiSectorCount">—</strong><small>setores identificados</small></div>
+    <div class="card"><span>Moedas</span><strong id="fiCurrencyCount">—</strong><small>exposições monetárias</small></div>
+  </div>
+
+  <div class="north-grade-row"><div class="north-grade-card"><span>North Score</span><strong id="northGrade">—</strong><small id="northGradeLabel">calculando</small></div><div id="northScorePillars" class="north-score-pillars"></div></div><div class="fi-health-grid" id="fiHealthChecks"></div>
+  <div class="north-intelligence-grid">
+  <section class="card north-heatmap-card">
+    <div class="ctitle">Heatmap da carteira</div>
+    <div id="northHeatmap" class="north-heatmap"></div>
+  </section>
+  <section class="card north-timeline-card">
+    <div class="ctitle">Timeline patrimonial</div>
+    <div id="northTimeline" class="north-timeline"></div>
+  </section>
+</div>
+<div class="fi-grid">
+    <div class="card">
+      <div class="ctitle">Mapa setorial</div>
+      <div id="fiSectors" class="fi-bars"></div>
+    </div>
+    <div class="card">
+      <div class="ctitle">Exposição cambial</div>
+      <div id="fiCurrencies" class="fi-bars"></div>
+    </div>
+  </div>
+
+  <div class="card fi-conviction-table">
+    <div class="ctitle">Ranking de convicção</div>
+    <div id="fiConvictionRanking"></div>
+  </div>
+</div>
+
+<!-- OBJETIVOS --><div class="pg" id="pg-go"><div class="north-page-hero"><div><span class="north-eyebrow">North Goals</span><h2>Objetivos patrimoniais</h2><p>Transforme metas de longo prazo em progresso mensurável.</p></div><button class="north-primary" onclick="addGoal()">+ Novo objetivo</button></div><div id="northGoalRings" class="north-goal-rings"></div><div id="northGoalsGrid" class="north-goals-grid"></div><section class="north-checklist-card"><div class="north-section-title"><span>Checklist do Family Office</span><small>fundamentos patrimoniais</small></div><div id="northChecklist" class="north-checklist"></div></section></div>
+<!-- NORTH AI -->
+<div class="pg" id="pg-na">
+  <div class="north-page-hero north-ai-hero">
+    <div>
+      <span class="north-eyebrow">Decision Intelligence</span>
+      <h2>North AI Advisor</h2>
+      <p>Leitura automática da carteira com prioridades, impactos e próximos passos.</p>
+    </div>
+    <div class="north-ai-status"><i></i><span>Análise local ativa</span></div>
+  </div>
+  <section class="north-cio-brief">
+  <div class="north-cio-badge">CIO</div>
+  <div><span>Resumo Executivo</span><h3 id="northCioBrief">Preparando a leitura do portfólio...</h3><div id="northCioActions" class="north-cio-actions"></div></div>
+</section>
+<div class="north-ai-layout">
+    <section class="north-ai-brief">
+      <div class="north-ai-avatar">N</div>
+      <div>
+        <span>North AI</span>
+        <h3 id="northAiGreeting">Boa noite.</h3>
+        <p id="northAiSummary">Analisando política, concentração, objetivos e convicções.</p>
+      </div>
+    </section>
+    <section>
+      <div class="north-section-title"><span>Oportunidades identificadas</span><b id="northAiCount">0</b></div>
+      <div id="northAiInsights" class="north-ai-insights"></div>
+    </section>
+    <section>
+      <div class="north-section-title"><span>Prioridades inteligentes</span><small>impacto estimado no North Score</small></div>
+      <div id="northAiPriorities" class="north-priority-table"></div>
+    </section>
+  </div>
+</div>
+
+<!-- DIVIDENDOS -->
+<div class="pg" id="pg-dv">
+<div class="grid2" style="margin-bottom:16px">
+<div class="card"><div class="lbl">Total Dividendos Recebidos</div><div class="val pos" id="dvTotalBRL">—</div><div class="val2" id="dvTotalUSD">—</div></div>
+<div class="card"><div class="lbl">Impostos Pagos</div><div class="val neg" id="dvTotalImp">—</div><div class="sub">sobre dividendos recebidos</div></div>
+</div>
+<div class="card" style="margin-bottom:16px">
+<div class="ctitle">Registrar dividendo recebido</div>
+<div class="fg" style="margin-bottom:10px">
+<div class="fr"><label class="fl">Ativo</label><select id="dvAtivo" onchange="dvAtivoChange()" style="width:100%"></select></div>
+<div class="fr"><label class="fl">Periodicidade</label><select id="dvPeriodo" style="width:100%"><option value="mensal">Mensal</option><option value="trimestral">Trimestral</option><option value="semestral">Semestral</option><option value="anual">Anual</option><option value="irregular">Irregular</option></select></div>
+</div>
+<div class="fg3">
+<div class="fr"><label class="fl">Valor Recebido</label><div style="display:flex;align-items:center;gap:6px"><span id="dvMoedaTag" style="font-size:11px;font-weight:700;color:var(--accent)">R$</span><input id="dvValor" min="0" oninput="dvCalcPct()" placeholder="0.00" step="0.01" style="width:100%" type="number"/></div></div>
+<div class="fr"><label class="fl">Imposto Pago</label><div style="display:flex;align-items:center;gap:6px"><span id="dvMoedaTagImp" style="font-size:11px;font-weight:700;color:var(--red)">R$</span><input id="dvImposto" min="0" oninput="dvCalcPct()" placeholder="0.00" step="0.01" style="width:100%" type="number"/></div><div style="font-size:10px;color:var(--text2);margin-top:3px">≈ <span id="dvPctCalc">0.0</span>% sobre o bruto</div></div>
+<div class="fr"><label class="fl">Data</label><input id="dvData" placeholder="dd/mm/aaaa" style="width:100%" type="text"/></div>
+</div>
+<div class="fr"><label class="fl">Observação</label><input id="dvObs" placeholder="Opcional" style="width:100%" type="text"/></div>
+<div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+<button class="bp" onclick="regDiv()">Registrar dividendo</button>
+<label style="font-size:12px;color:var(--text2)">Reinvestir em:</label>
+<select id="dvReinvest" style="width:200px"><option value="">— escolher ativo —</option></select>
+<button class="bp grn" onclick="reinvestDiv()">Reinvestir</button>
+</div>
+</div>
+<div class="card"><div class="ctitle">Histórico de dividendos</div><div id="dvHistorico"><p style="color:var(--text2);font-size:12px">Nenhum dividendo registrado.</p></div></div>
+</div>
+<!-- HISTORICO -->
+<div class="pg" id="pg-hs">
+<div class="card" style="margin-bottom:16px">
+<div class="ctitle">Filtros</div>
+<div class="hfilt">
+<select id="hsFiltAt" onchange="buildHistorico()"><option value="">Todos os ativos</option></select>
+<select id="hsFiltTp" onchange="buildHistorico()"><option value="">Todos os tipos</option><option value="aporte">Aporte</option><option value="venda">Venda</option><option value="reinvestimento">Reinvestimento</option></select>
+<input id="hsFiltBusca" oninput="buildHistorico()" placeholder="Buscar ticker..." style="width:160px;font-size:12px;padding:5px 8px" type="text"/>
+</div>
+</div>
+<div class="tw"><table>
+<thead><tr><th>Data</th><th>Ativo</th><th>Nome</th><th>Tipo</th><th>Qtd</th><th>Preço</th><th>Câmbio</th><th>Taxa</th><th>Valor orig.</th><th>Valor BRL</th><th>Lucro/Prej.</th><th>IR Est.</th><th>Líq. pós IR</th><th>PM</th><th>Obs.</th></tr></thead>
+<tbody id="tbHist"></tbody>
+</table></div>
+<div id="hsResumo" style="margin-top:4px"></div>
+</div>
+</div><!-- /app -->
+<!-- MODAL NOVO ATIVO -->
+<div class="mb" id="mNovo">
+<div class="md">
+<div class="mt">➕ Novo Ativo</div>
+<div class="fr" style="display:flex;gap:8px;align-items:flex-end">
+<div style="flex:1"><label class="fl">Ticker</label><input id="nTk" oninput="this.value=this.value.toUpperCase()" placeholder="Ex: AAPL, PETR4" style="width:100%" type="text"/></div>
+<div><label class="fl">Mercado</label><select id="nMk" style="width:110px"><option value="US">EUA (USD)</option><option value="BR">Brasil (BRL)</option></select></div>
+<button class="bp" onclick="buscarTicker()" style="white-space:nowrap;padding:7px 14px">🔍 Buscar</button>
+</div>
+<div id="nFetchBox" style="display:none"></div>
+<div id="nFormBox" style="display:none">
+<div class="fg">
+<div class="fr"><label class="fl">Nome</label><input id="nNm" style="width:100%" type="text"/></div>
+<div class="fr"><label class="fl">Setor</label><input id="nSt" style="width:100%" type="text"/></div>
+</div>
+<div class="fg">
+<div class="fr"><label class="fl">Tipo</label><select id="nTp" style="width:100%"><option value="acao">Ação</option><option value="etf">ETF</option><option value="fii">FII</option><option value="renda">Renda Fixa</option><option value="caixa">Caixa</option></select></div>
+<div class="fr"><label class="fl">Peso alvo (%)</label><input id="nPa" min="0" placeholder="0" step="0.1" style="width:100%" type="number"/></div>
+</div>
+<div class="info-box">💡 Quantidade e PM serão definidos no primeiro aporte. Dividendos são lançados na aba Dividendos.</div>
+<div class="fa"><button class="bs" onclick="closeM()">Cancelar</button><button class="bp" onclick="saveNovo()">Cadastrar Ativo</button></div>
+</div>
+<div class="fa" id="nFaCancel"><button class="bs" onclick="closeM()">Cancelar</button></div>
+</div>
+</div>
+<!-- MODAL APORTE -->
+<div class="mb" id="mAporte">
+<div class="md">
+<div class="mt">💰 Registrar Aporte</div>
+<div class="fr"><label class="fl">Ativo</label><select id="aTk" onchange="aporteTickerChange()" style="width:100%"></select></div>
+<div class="info-box" id="aInfoBox" style="display:none"></div>
+<div class="fg3">
+<div class="fr"><label class="fl">Valor Aportado</label><div style="display:flex;align-items:center;gap:5px"><span id="aMoeda" style="font-size:11px;font-weight:700;color:var(--accent)">US$</span><input id="aValor" min="0" oninput="aporteCalc()" placeholder="0.00" step="0.01" style="width:100%" type="number"/></div></div>
+<div class="fr"><label class="fl">Preço Médio</label><div style="display:flex;align-items:center;gap:5px"><span id="aMoeda2" style="font-size:11px;font-weight:700;color:var(--accent)">US$</span><input id="aPreco" min="0" oninput="aporteCalc()" placeholder="0.00" step="0.0001" style="width:100%" type="number"/></div></div>
+<div class="fr" id="aCambioBox"><label class="fl">Câmbio USD/BRL</label><input id="aCambio" min="0" oninput="aporteCalc()" placeholder="5.2056" step="0.0001" style="width:100%" type="number" value="5.2056"/></div>
+</div>
+<div class="fg">
+<div class="fr"><label class="fl">Taxa / Corretagem (BRL)</label><input id="aTaxa" min="0" oninput="aporteCalc()" placeholder="0.00" step="0.01" style="width:100%" type="number"/></div>
+<div class="fr"><label class="fl">Data do aporte</label><input id="aData" placeholder="dd/mm/aaaa" style="width:100%" type="text"/></div>
+</div>
+<div class="info-box" id="aCalcBox" style="display:none">
+<div class="calc-row">📦 Quantidade: <span class="calc-val" id="aQtdCalc">—</span></div>
+<div class="calc-row">💰 Valor BRL: <span class="calc-val" id="aValBRL">—</span></div>
+<div class="calc-row">📊 PM atual: <span class="calc-val" id="aPMatual">—</span> → Novo PM: <span class="calc-val" id="aPMnovo">—</span></div>
+</div>
+<div class="fr"><label class="fl">Observação</label><input id="aObs" placeholder="Opcional" style="width:100%" type="text"/></div>
+<div class="fa"><button class="bs" onclick="closeM()">Cancelar</button><button class="bp grn" onclick="saveAporte()">Confirmar Aporte</button></div>
+</div>
+</div>
+<!-- MODAL VENDA -->
+<div class="mb" id="mVenda">
+<div class="md">
+<div class="mt">📉 Registrar Venda</div>
+<div class="fr"><label class="fl">Ativo</label><select id="vTk" onchange="vendaTickerChange()" style="width:100%"></select></div>
+<div class="info-box" id="vInfoBox" style="display:none"></div>
+<div class="fg3">
+<div class="fr"><label class="fl">Qtd Vendida</label><input id="vQtd" min="0" oninput="vendaCalc()" placeholder="0.00000000" step="0.00000001" style="width:100%" type="number"/><div style="font-size:10px;color:var(--text2);margin-top:3px">Disponível: <span id="vQtdDisp">—</span></div></div>
+<div class="fr"><label class="fl">Preço de Venda</label><div style="display:flex;align-items:center;gap:5px"><span id="vMoeda" style="font-size:11px;font-weight:700;color:var(--green)">US$</span><input id="vPreco" min="0" oninput="vendaCalc()" placeholder="0.00" step="0.0001" style="width:100%" type="number"/></div></div>
+<div class="fr" id="vCambioBox"><label class="fl">Câmbio Venda</label><input id="vCambio" min="0" oninput="vendaCalc()" placeholder="5.21" step="0.0001" style="width:100%" type="number"/><div style="font-size:10px;color:var(--text2);margin-top:3px">Atual: <span id="vCambioAtual">—</span></div></div>
+</div>
+<div class="fg">
+<div class="fr"><label class="fl">Taxa / Corretagem (BRL)</label><input id="vTaxa" min="0" oninput="vendaCalc()" placeholder="0.00" step="0.01" style="width:100%" type="number"/></div>
+<div class="fr"><label class="fl">Data da venda</label><input id="vData" placeholder="dd/mm/aaaa" style="width:100%" type="text"/></div>
+</div>
+<div id="vCalcBox" style="display:none">
+<div class="info-box" style="border-color:var(--accent);margin-bottom:8px">
+<div style="font-size:11px;font-weight:600;margin-bottom:8px;color:var(--accent)">📊 Resumo da operação</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px">
+<div>Valor bruto venda: <strong id="vResBruto">—</strong></div>
+<div>PM de compra: <strong id="vResPM">—</strong></div>
+<div>Custo das cotas: <strong id="vResCusto">—</strong></div>
+<div>Resultado bruto: <strong id="vResLucro">—</strong></div>
+<div>Câmbio médio compra: <strong id="vResCambioComp">—</strong></div>
+<div>Variação cambial: <strong id="vResVarCambio">—</strong></div>
+<div>Taxa: <strong id="vResTaxa">—</strong></div>
+<div>Resultado líquido: <strong id="vResLiq">—</strong></div>
+</div>
+</div>
+<div class="info-box" style="border-color:var(--yellow)">
+<div style="font-size:11px;font-weight:600;margin-bottom:8px;color:var(--yellow)">🧾 Imposto estimado (revise antes de confirmar)</div>
+<div id="vImpRegra" style="font-size:11px;color:var(--text2);margin-bottom:8px"></div>
+<div class="fg">
+<div class="fr"><label class="fl">Base de cálculo (BRL)</label><input id="vImpBase" oninput="vendaCalcImp()" step="0.01" style="width:100%" type="number"/></div>
+<div class="fr"><label class="fl">Alíquota (%)</label><input id="vImpAliq" max="100" min="0" oninput="vendaCalcImp()" step="0.01" style="width:100%" type="number"/></div>
+</div>
+<div style="font-size:12px;margin-top:4px">Imposto estimado: <strong id="vImpValor" style="color:var(--red)">R$ 0,00</strong> | Resultado após IR: <strong class="pos" id="vResAfterIR">—</strong></div>
+</div>
+</div>
+<div class="fr"><label class="fl">Observação</label><input id="vObs" placeholder="Opcional" style="width:100%" type="text"/></div>
+<div class="fa"><button class="bs" onclick="closeM()">Cancelar</button><button class="bp red" onclick="saveVenda()">Confirmar Venda</button></div>
+</div>
+</div>
+<!-- MODAL EDITAR -->
+<div class="mb" id="mEdit">
+<div class="md">
+<div class="mt">✏️ Editar Ativo</div>
+<input id="eTkHidden" type="hidden"/>
+<div class="fg">
+<div class="fr"><label class="fl">Nome</label><input id="eNm" style="width:100%" type="text"/></div>
+<div class="fr"><label class="fl">Setor</label><input id="eSt" style="width:100%" type="text"/></div>
+</div>
+<div class="fg">
+<div class="fr"><label class="fl">Mercado</label><select id="eMk" style="width:100%"><option value="US">EUA (USD)</option><option value="BR">Brasil (BRL)</option></select></div>
+<div class="fr"><label class="fl">Tipo</label><select id="eTp" style="width:100%"><option value="acao">Ação</option><option value="etf">ETF</option><option value="fii">FII</option><option value="renda">Renda Fixa</option><option value="caixa">Caixa</option></select></div>
+</div>
+<div class="fr"><label class="fl">Peso alvo (%)</label><input id="ePa" min="0" step="0.1" style="width:200px" type="number"/></div>
+<div class="fa"><button class="bs" onclick="closeM()">Cancelar</button><button class="bp" onclick="saveEdit()">Salvar</button></div>
+</div>
+</div>
+<!-- MODAL IMPORT -->
+<div class="mb" id="mImp">
+<div class="md">
+<div class="mt">Importar carteira</div>
+<div class="ia" onclick="document.getElementById('fImp').click()">
+<div style="font-size:26px;margin-bottom:6px">📂</div>
+      Clique para selecionar o arquivo <strong>carteira.json</strong>
+<input accept=".json" id="fImp" onchange="imp(event)" style="display:none" type="file"/>
+</div>
+<p style="font-size:11px;color:var(--text2);margin-top:10px">⚠ Substituirá todos os ativos atuais.</p>
+<div class="fa"><button class="bs" onclick="closeM()">Cancelar</button></div>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="js/login.js"></script><script src="js/app.js"></script></body>
+</html>
