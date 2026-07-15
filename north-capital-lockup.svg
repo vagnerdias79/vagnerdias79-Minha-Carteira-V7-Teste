@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="North Capital">
+  <defs>
+    <linearGradient id="gold" x1="28" y1="220" x2="224" y2="22" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8c5a18"/>
+      <stop offset=".34" stop-color="#d7a84f"/>
+      <stop offset=".67" stop-color="#fff0bb"/>
+      <stop offset="1" stop-color="#b9791f"/>
+    </linearGradient>
+    <linearGradient id="steel" x1="0" x2="1"><stop stop-color="#ecf7ff"/><stop offset="1" stop-color="#7896b0"/></linearGradient>
+    <filter id="glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <circle cx="128" cy="128" r="89" fill="#03101d" stroke="url(#gold)" stroke-width="5"/>
+  <circle cx="128" cy="128" r="67" fill="none" stroke="#29445d" stroke-width="2"/>
+  <path d="M128 13l18 81 59-42-42 59 80 17-80 18 42 59-59-42-18 80-17-80-59 42 42-59-81-18 81-17-42-59 59 42z" fill="url(#gold)" filter="url(#glow)"/>
+  <path d="M128 43l10 57 39-29-29 39 56 18-56 17 29 39-39-29-10 57-11-57-39 29 29-39-56-17 56-18-29-39 39 29z" fill="#071827" opacity=".92"/>
+  <path d="M80 174v-28h13v28zm22 0v-46h13v46zm22 0v-68h13v68zm22 0v-88h13v88zm22 0v-56h13v56z" fill="url(#steel)"/>
+  <path d="M77 174h109" stroke="url(#gold)" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="128" cy="128" r="7" fill="#f5d789"/>
+</svg>

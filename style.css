@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 170" role="img" aria-label="North Capital Private Wealth Intelligence">
+  <defs>
+    <linearGradient id="g" x1="25" y1="150" x2="160" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#8c5a18"/><stop offset=".38" stop-color="#d7a84f"/><stop offset=".68" stop-color="#fff0bb"/><stop offset="1" stop-color="#b9791f"/></linearGradient>
+  </defs>
+  <g transform="translate(8 6)">
+    <circle cx="78" cy="78" r="65" fill="#03101d" stroke="url(#g)" stroke-width="3.5"/>
+    <circle cx="78" cy="78" r="50" fill="none" stroke="#2b4357" stroke-width="1.4"/>
+    <path d="M78 4l12 54 39-28-28 39 54 9-54 12 28 39-39-28-12 54-11-54-39 28 28-39-54-12 54-9-28-39 39 28z" fill="url(#g)"/>
+    <path d="M78 25l7 38 27-20-20 27 38 8-38 7 20 27-27-20-7 38-8-38-27 20 20-27-38-7 38-8-20-27 27 20z" fill="#071827"/>
+    <path d="M44 113v-18h9v18zm15 0V83h9v30zm15 0V68h9v45zm15 0V55h9v58zm15 0V76h9v37z" fill="#edf5fb"/>
+    <path d="M42 113h75" stroke="url(#g)" stroke-width="3.5" stroke-linecap="round"/>
+  </g>
+  <text x="171" y="74" fill="#f5f2eb" font-family="Georgia, 'Times New Roman', serif" font-size="50" letter-spacing="4.8">NORTH CAPITAL</text>
+  <text x="176" y="112" fill="#d4a94e" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="600" letter-spacing="7.2">PRIVATE WEALTH INTELLIGENCE</text>
+  <path d="M174 130h652" stroke="#17344b" stroke-width="1"/>
+</svg>
