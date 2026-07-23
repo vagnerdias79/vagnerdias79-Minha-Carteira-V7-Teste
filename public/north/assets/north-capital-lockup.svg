@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 735 128" role="img" aria-label="North Capital Private Wealth Intelligence">
+<defs>
+ <linearGradient id="gold" x1="18" y1="142" x2="142" y2="10" gradientUnits="userSpaceOnUse"><stop stop-color="#8a5719"/><stop offset=".35" stop-color="#d0a24b"/><stop offset=".68" stop-color="#f7e7ae"/><stop offset="1" stop-color="#aa701f"/></linearGradient>
+ <radialGradient id="navy"><stop stop-color="#0b2237"/><stop offset="1" stop-color="#020b14"/></radialGradient>
+ <filter id="glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<g transform="translate(6 4)">
+ <circle cx="72" cy="72" r="63" fill="url(#navy)" stroke="url(#gold)" stroke-width="3"/>
+ <circle cx="72" cy="72" r="49" fill="none" stroke="#284760" stroke-width="1.4"/>
+ <path d="M72 5l10 45 34-24-24 34 46 12-46 11 24 35-34-25-10 46-11-46-34 25 24-35L5 72l46-12-24-34 34 24z" fill="url(#gold)" filter="url(#glow)"/>
+ <path d="M72 27l7 30 23-17-17 24 31 8-31 7 17 24-23-17-7 31-8-31-23 17 17-24-31-7 31-8-17-24 23 17z" fill="#061523"/>
+ <path d="M42 104V89h8v15zm14 0V79h8v25zm14 0V66h8v38zm14 0V54h8v50zm14 0V73h8v31z" fill="#edf5fb"/>
+ <path d="M40 104h69" stroke="url(#gold)" stroke-width="3.2" stroke-linecap="round"/>
+</g>
+<text x="148" y="62" fill="#f6f1e7" font-family="Georgia, 'Times New Roman', serif" font-size="48" font-weight="600" letter-spacing="3.4">NORTH CAPITAL</text>
+<text x="151" y="99" fill="#d5aa55" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" letter-spacing="4.2">PRIVATE WEALTH INTELLIGENCE</text>
+
+</svg>

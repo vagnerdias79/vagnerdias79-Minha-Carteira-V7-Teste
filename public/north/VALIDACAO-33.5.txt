@@ -1,0 +1,16 @@
+NORTH CAPITAL — BUILD 33.5 EXECUTIVE CORE
+
+[OK] Sintaxe JavaScript validada.
+[OK] Build de produção validada.
+[OK] Chave principal mc-v5 mantida sem alteração.
+[OK] Histórico, aportes, dividendos e política continuam no mesmo payload.
+[OK] Objetivos e tema continuam em north-capital-foundation.
+[OK] Atualização concorrente deduplicada pelo NorthEngine.
+[OK] Timeout mantém a interface utilizável com dados locais.
+[OK] Exposição geográfica calculada com base nas posições e acionável.
+[OK] Relatório de rebalanceamento pronto para impressão em PDF.
+[OK] Caixa USD e câmbio por aporte preservados.
+[OK] Portfólio amplo com busca e filtro por mercado.
+[OK] Sidebar da Inteligência e logo revisados.
+
+Senha preservada da Build 33.4: 1579
